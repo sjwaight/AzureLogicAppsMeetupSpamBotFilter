@@ -61,9 +61,7 @@
         },
         "logicAppLocation": {
             "type": "string",
-            "defaultValue": "[resourceGroup().location]",
             "allowedValues": [
-              "[resourceGroup().location]",
               "eastasia",
               "southeastasia",
               "centralus",
@@ -176,7 +174,623 @@
                 "brandColor": "#ffb6c1",
                 "description": "This is a simplified respresentation of Meetup's published API which you can find out more about https://www.meetup.com/meetup_api/. This Open API specificaton is not published or maintained by Meetup.",
                 "displayName": "[parameters('customApis_Meetup_ReadOnly_API_name')]",
-                "iconUri": "data:image/png;base64,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"
+                "iconUri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARwAAADiCAYAAACcG3g9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAABVOSURBVHhe7Z0LtFVVFYalYY4SpUBNTMIakYJaqTFMUqmowEeaGb4AtZAkZQxQh6FCQT7wQUlZaVY+MCyLSEsrFcESUxQqNDU1E7IUgUIznyC6GtMzt95zz3+55zXn3muv/x/jG4N77zn7X+uw73/PmXuvuTYJm2wSCCHEAwYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBg4hxA0GDiHEDQYOIcQNBo4nvXq1Ts+e+NjEhx49QthyS/x/0yzIp6QwcKwYNCiEqVNDuPnmEFatCuHll0Pb9OqrITz3XAirV4fwwAMhzJ0bwvTpIYwcmdwJbMaee4YwYUIIs2eHcP/9IaxZE8Lzz+t/QJu1YUPl/3L+/BCmTAmhf388phLAwGk3AwaE8NOf6pmUgySMrrkmhEMOweMjXdOvXwinnRbCX/6iL2aOmjkTjzFyGDjt5KijQnjmGT1jCqAf/ziErbbCYyXVnHGGvmgF0uWX47FGDAOnXUjYFFErV4YweDAeMwlhr71CWLxYX6wCaswYPO5IYeC0g7331rOjoHr00crHBTT2lJGa17p1+iIVVPLxDo09Uhg47eDuu/XsKLDuuAOPPVVOOklfmAi09dZ4DhHCwGmVSZP0rIhAhx2G55AaBx+sL0gk2mcfPI8IYeC0ilyWjkV/+AOeQ0q8+92VS9wxafhwPJcIYeC0wogRekZEJLm/BM0lFRYs0BciIsl5huYSIQycVpgxQ8+IiCSXf9FcUmDyZH0RItOuu+L5RAgDpxUWLdIzIiLdcgueS9n54Af1BYhQvXvjOUUIA6cVXnpJz4iI9MorlfVAaD5lZuFCfQEi0/LleD6RwsBplt120zMiQg0ciOdUVo48UiceoebNw3OKFAZOs4wdq2dEhPrMZ/Ccysq99+rEI5Qs5kRzihQGTrN897t6RkQoKZ6iOZWRL31JJx2p9t8fzytSGDjNcuedekZEqCuuwHMqG5tuGsJjj+mkI9W22+K5RQoDp1liLBhnksWKaE5l4+yzdcKRasUKPK+IYeA0Q8wFY5G00EDzKhM77qiTjVjXXovnFjEMnGaIuWCcaYcd8NzKwk9+ohONWF/5Cp5bxDBwmiHmgnGm/fbDcysDMrcy6IAD8PwihoHTDB4FY+lZbKmTT8ZzKwN33aWTjFx9++L5RQwDpxk8CsbnnKP/MNIPf4jnFjvS+NxaHh/X5Ooaml/kMHAaxWtNjrQFtVQZW1XI9i3WrSfkD8HDD+sXhrruOjzHyGHgNMoXvqBnhLHE64UX9AsDPfVU7dxi58ILdXJGWru24uOhr361dn4lgIHTKB4FY+lBLF5/+pN+w0jbb187v1jxuFVB7lp+z3v0C2MdeCCeZ+QwcBrFo2B89dUVrzlz9BtG+tSnaucXK/IRxFJZM/NjjtFvGGu77WrnWAIYOI3iUTCWwqd4ycI9S02cWDu/GDn0UJ2QoT796YqXFNut9c9/1s6xJDBwGsGrYLzHHhW/z35Wv2GkSy+tnWOMWK8G/+1v3/B66CH9pqF++cvq+ZUIBk4jeBaMhZ120m8Y6bbbqucXI6eeqpMx1O67v+HnoWnTqudYIhg4jfCd7+gZYahHHqn2tJRcQu7oFRuyktrySp7oBz94w092fPDQQQdVz7NEMHAaQTaTs5YUijt6Pvus/sBI22xT7RcT3/ueTsJQHV+fo4/WbxqrTFcPO8HAaYQXX9QzwlAnnljtuXSp/sBIw4ZV+8XCkCE6AUNNn17tKe92rPWvf1V7lgwGTr14FYw71guEq67SHxgpuyIWGzffrBMw0qpVtZ4PPqg/NNT119f6lggGTr14F4wzTj9df2AkuZGxs2fRGTNGB2+o446r9fXQ175W61siGDj14lEw/tvfan2t98G+9dZaz6Ijd2JbSu7w7uwp/YM8JP/fnb1LBAOnXjwKxvLxqbPv+96nPzTSk0/WehYZuWRsLbS1rse7KlG/frXeJYKBUy8eBWNZq4O8rdWrF/YtGh7rmH71K+z9/e/rAwz1xBPYu0QwcOrBq2AsPsj/6af1AUbad1/sWzRmz9YBG2qXXbD3X/+qDzDUDTdg7xLBwKmHvArGGXffrQ8wUlfvrIrEJz6hgzXUxRdjb8FDZ56JvUsEA6cePArGskYHeQtXXqkPMtJFF2HfIiENw6zVpw/27t9fH2CsBHZEZeDUg0fBWD4uIG9Bdsq01Pz52LcofPGLOlBDbWxL3dGj9UHGete7sH+JYODUg0fBePx47C1IawRLPf449i0Cb3lLCKtX60CN1N3dvbKq3lorV2LvksHA6Y68C8bCe9+rDzKU/GIj77w57zwdoKGkqRbyzrjvPn2goX79a+xdMhg43ZF3wTjDWh/+MPbNk5131sEZSraUQd4d8dBZZ2HvksHA6Q6PgrGs0UHeHfn3v/XBRpI6CfLNk7lzdXCG6m7xqtRVPCTN1pB/yWDgdIdHwfiKK7B3R6x7Kc+ahX3zwrpuJZo3D3t3ZNQofbCxyr71ssLA6Q6PgnE97y4uv1wfbKQbb8S+ebFsmQ7MUAMHYu+OePTciW15SQswcDZGEQrGGdatNIu00+OkSTooQ33rW9i7M/fco08wVMeeySWHgbMxilIwFmRje2u96U3Y25PevUN4/nkdkJHWr69//ZiHZDdP5F1CGDgbw6NgLGt0kHdnPBYuymZyyNsTuevZWvJuEXl3RlZue0i2uUH+JYSBszE8CsZSm0HeCGsdeyz29cJ6P3XR8uXYG3HUUfokY0lzduRfQhg4G8OjYDxuHPZGSHHRUl//Ovb1QmoZ1pIQQd6ISy7RJxlK7qJG3iWFgdMVH/iAnhHGqqdgnLFokT7JSHne7Xr44ToIQ91+O/buCuu93UVFuzpoDAOnK4pUMM6w3mZWWnciXw9kPy5rDR2KvbvCQzNmYO+SwsDpCo+C8f33Y++uOOUUfaKhkK811o3iRddcg727QvaG8tDnPof9SwoDpys8CsbyjgV5d8V+++kTDSXrl5C3FV6/2NIbGvl3xZFH6hONJVcfkX9JYeB0hfUWsqKxY7F3V3jsHNBIUbUdWN9BLWqmGC7d/6wV+1bLTcDAQRSxYJxhLWkHgXwtkF7K1pKbCHv2xP4bY8kSPYChbroJe5cYBg7i85/XM8JYyLs7pFmUpbratcAC66tuIlkmgby7Y8MGPYChPMO9IDBwEN/+tp4RhpKmTsi7O373Oz2AkdBmfBZ4hPrDD2Pv7njnO/UAxjrsMOxfYhg4CI+G3bIxPvLuDo/9kZBvO5E1W9Y3MYpGjsT+3XHEEXoAY0knR+RfYhg4CI+Csdzng7y746ST9ACGGjAAe7cLWaxorYULsXc9yH7r1pKGasi75DBwOlPkgrEwfLgewFCWiwmtty7OtPfe2L8eFi/Wgxiq6DtlGMHA6UyRC8aCR8tLyw3ZfvYzNTHUj36Evetl3To9kKHOPx97lxwGTmc8Csb33ou968Vav/gF9m2VESPUwFit3Ey33XZ6EGPJ2jHkX3IYOJ3xKBjLPkfIu15WrNADGamepu7N8Oc/q4Ghzj0Xe9eLxyJSkXWdrKAwcDpT5IJxxi236IEMhXxb4cQT9cCG+u9/W99fy2MN3dq12DsBGDgdKXrBOMOjT0s7t53dYosQnn1WD2yoCROwfyN4vMOVPxjIOwEYOB0pesE4Y+JEPZChZJsW5N0M0rDcWo2uvO8Kj3e4F1yAvROAgdMRj4Kx7AKAvBvhk5/Ugxlq6lTs3She7xrbsZFc3756MGPJjYXIPwEYOB3xeDst+xwh70bwaOkgl6+Rd6P85jd6QEO1axGkLDXwUKOtMkoEA6cjMRSMM6zVjo8o8q7DQ3vthf0bxeOj31NPYe9EYOBkxFIwzrBuyfnKK9i3EWQhqLUa2fWiO267TQ9qqAULsHciMHAyYikYZ0jzbWttuy32rofJk/UgxurfH/s3g8eVtLx3xsgZBk6GR8FYbnxD3s3gMV5Zt4W8u+Md79ADGKudSzAkXD3k3VGxYDBwMjwKxtK2Enk3g9xzYq16d6jsjPXuEiJZbf3mN2P/ZpBWFh7acUfsnwgMnIyYCsbCsGF6UEPNmYO9N4YUcD00fjz2b5YLL9QDG+rpp7F3QjBwhNgKxoLHIsNm7hnyKLwuW4a9W+HWW/XghhIP5J0QDBwhtoJxhnXf3fXrsW9XHH20PtFYBx+M/VtB1mFZ6xvfwN4JwcARPAqwsm0s8m4FWdVtrd69sTdi5Up9kqFuuAF7t4JXkXvUKOyfEAwcwaNgLG0rkXcryC+ftT76UezdmbPO0icYa/Bg7N8KsvulhwYOxP4JwcARZO8ia7WzYJwxa5Ye3FCyUBR5d8Rjgz5Rq32EumLmTDUw1DPPYO/EYODEWDDOOOEEPbihLrsMe3dE9u32kKwhQ/6t4tFfSLb3Qd6JwcCJtWAsfOxjenBDLV2KvTM8Vq6Lpk3D/u1AGmJZSy67I+/EYOB4FIy7+6VtFo9ip9yfhLwz/vhHfaChpBjdowf2b5VttlETY40ejf0Tg4Fz++16RhhK2lYi73bw0ktqYqjNN8feHh/pROPGYf92IFvieGjQIOyfGAycWAvGGdJGwlpDhtT6brZZCP/7nz7AUEuW1Hq3E9nf21ryOiHvBEk7cN7/fj0jjGVRMM647jo1MRRaRuBxhUx04IG13u1EmndZ6/e/x94JknbgHHusnhHGQt7twuOSrjRt7+i58876A2Nde221rwVr1qiZoSSckXeCpB04F12kZ4ShrD8SHH+8GhnqjjuqPT1uOBTtvnu1b7vZems1MtaYMdg/QdIOnNgLxsLQoWpkKGlMlfkdcoh+01gWd2Z3xqsFqrwjRP4JknbgxF4wFrz+Sm+6acXvoYf0G4aSRamtdBusl3POUUNDPfcc9k6UdAOnDAXjDDmprbXHHiF8+cv6hbGmTMHzbDceO0osWoS9EyXdwClDwThD+tZYSzZvk8bq1nrsMTxHC558Uk0NJTtBIO9ESTdwPArGd92FvdvNz3+uhiWQ9UfQjK22UkNjHXMM9k+UdAOnDAXjDI+b1zzU+WqYJV7F7113xf6Jkm7glKFgnDF2rBpGrhEj8PwskB0frCXnGPJOmDQDp0wFY2GffdQwYs2di+dmxfXXq7Gh5F008k6YNAOnTAVjoU8fNYxY0pcIzc2Kxx9XY0NJnRB5J0yageNRMF68GHtb4dEE3Erev5heAS1/2JB/wqQZOGUqGGd49KWx0IsvVm5eRHOy4qCD1NxY8tEd+SdMmoFTpoJxhlebz3brtNPwfCyR7oHW6q5xWaKkFzhlKxhnnH22Gkekv/8dz8Uaj5YeshMI8k6c9ALHo2D86qvY2xK5wSw25XVTnNzNbC1pXYu8Eye9wPEoGHvewJbxkY+oeSTKqymVbOznIWnOj/wTJ73AKWPBWHj729U8EsluD2ge1hxwgA7AWN6X+SMhvcApY8E44z//0QEUXFLgRuP3YOpUHYShpLE98iaJBU5ZC8YZslg0BuXZkGrePB2Eoe68E3uTxALHo2AsLRyQtwdz5uggCqy8N4RbvlwHYiiPboWRklbglLVgnDF9ug6ioJLtUqRoi8bugVedSxbTIn+SWOBI9zVr5VEwzhg1SgdRUJ16Kh63F7Ia3UO77Yb9SWKB49GKM6+CsbDnnjqIAurBB/GYPTn9dB2Modatw97kNdIJnLIXjIVevXQQBZS8+0Jj9kRaYFjLe9FuZKQTOB4F45dfxt6erF6tgymQFi7EY/XmkUd0QIa6+GLsTV4jncCRZtbWyrNgnCFreIqmj38cj9WTt71NB2Os447D/uQ10gmcsheMM668UgdTEF19NR6nN3Jns4esdwuNnHQCp+wF4wyPO2kb0U474XF647Gn1vr12Ju8ThqBI53zPZRnwTjj8MN1MAXQzJl4jHng0S/Ia1ugiEkjcDxaNxTlr5vskFkErV1buWqGxpgHHlsUX3IJ9iavk0bgpFIwFrbYQgeUs04+GY8vD7xuFxg3DvuT10kjcFIpGGc88YQOKifddx8eV17IVTIPybtL5E9eJ43ASaVgnCHNrfLUEUfgceXFKafowAy1YQP2JlWUP3BSKhhnXHaZDioHzZ+Px5QncmneWkuWYG9SRfkDx6NgXLSGS7ITQl7ad188pjx54AEdnKEuvRR7kyrKHzgeBeOiNVw69FAdmLNmz8bjyZMtt9TBGev447E/qaL8gZNawViQfrp5aMAAPJ48GTpUB2esD30I+5Mqyh84qRWMhbe+VQfmqPPOw2PJm0mTdICGki6PPXpgf1JFuQMnxYJxhsfeS5nWrAlh883xOPLmqqt0kIZauhR7kxrKHTgeHfBWrcLeebNggQ7QQRMm4DEUgXvu0UEa6pvfxN6khnIHjvwiWGvKFOydN5Mn6wCNJdvmIv+i8I9/6ECNJD2Q+vbF3qSGcgdOnz4hPPqonhkGuvHGEDbbDHsXgTPO0IEaKYbdCaz3XB8/HvsSSLkDR9h++8qNcCtW6BnSol54IYSbbqp0EER+RWOHHUKYMSOEZct0Ai1I7jeSu5jl3dOgQdiviIwZU+k62C7JuSS1ITZLb5jyB05H+vcPYfjwEE44ofLX/4ILKpvOd4XsoTRtWggTJ4YwcmQIu+yCjxsL0vVuyJAQRo+u7KAwaxaet3D++ZVgkftL9t+/0hMaHTMmevYMYfDgSgDJ4tIzz6zcp4Xmn3HuuZXXQd7JDBsWQr9++NikLtIKHEJIrjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIW4wcAghbjBwCCFuMHAIIU5sEv4PCaFldBC9xcEAAAAASUVORK5CYII=",
+                "backendService": {
+                  "serviceUrl": "https://api.meetup.com/"
+                },
+                "swagger": {
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a simplified respresentation of Meetup's published API which you can find out more about https://www.meetup.com/meetup_api/. This Open API specificaton is not published or maintained by Meetup.",
+    "version": "3.0.3",
+    "title": "Meetup Public Read-only API"
+  },
+  "host": "api.meetup.com",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/{meetup-group}": {
+      "get": {
+        "summary": "Retrieve Meetup Group by URL name",
+        "operationId": "GetMeetupGroup",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "meetup-group",
+            "in": "path",
+            "description": "URL name of Meetup Group. i.e. Azure-Sydney-User-Group",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Comma-delimited list of optional field names to append to the response",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/MeetupGroup"
+            }
+          },
+          "404": {
+            "description": "Meetup not found"
+          },
+          "410": {
+            "description": "Meetup Group has been deleted"
+          }
+        }
+      }
+    },
+    "/{meetup-group}/members": {
+      "get": {
+        "summary": "Retrieve Meetup Group Members List",
+        "operationId": "GetMeetupGroupMembersList",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "meetup-group",
+            "in": "path",
+            "description": "URL name of Meetup Group. i.e. Azure-Sydney-User-Group",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Comma-delimited list of optional field names to append to the response",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Orders results according to definitions listed below. May be one of 'interesting', 'name', 'joined', or 'stepup_recommended'",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Number of requested members to return (unspecifed = 200 records)",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MeetupMember"
+              }
+            }
+          },
+          "404": {
+            "description": "Meetup not found"
+          }
+        }
+      }
+    },
+    "/{meetup-group}/events": {
+      "get": {
+        "summary": "Retrieve Meetup Group Events List",
+        "operationId": "GetMeetupGroupEventList",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "meetup-group",
+            "in": "path",
+            "description": "URL name of Meetup Group. i.e. Azure-Sydney-User-Group",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Comma-delimited list of optional field names to append to the response",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "desc",
+            "in": "query",
+            "description": "When true, sorts results in descending order. Defaults to false",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "has_ended",
+            "in": "query",
+            "description": "Returns events which have ended when true. When false, returns events which are ongoing or upcoming.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "no_earlier_than",
+            "in": "query",
+            "description": "An optional timestamp that represents a lower time bound (inclusive) for the start time of events in the local time of the group. If provided, it must be a string in ISO 8601 format without a time zone specified, i.e. 2018-06-01T00:00:00.000",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no_later_than",
+            "in": "query",
+            "description": "An optional timestamp that represents an upper time bound (exclusive) for the start time of events in the local time of the group. If provided, it must be a string in ISO 8601 format without a time zone specified, i.e. 2018-06-01T00:00:00.000",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Number of results to return in a page. Must be an integer greater than or equal to 1. Defaults to 200",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "A comma-delimited list of event statuses. Valid values are: 'cancelled', 'draft', 'past', 'proposed', 'suggested', or 'upcoming'",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MeetupEvent"
+              }
+            }
+          },
+          "404": {
+            "description": "Meetup not found"
+          }
+        }
+      }
+    },
+    "/{meetup-group}/events/{eventid}": {
+      "get": {
+        "summary": "Retrieve Meetup Group Event Details",
+        "operationId": "GetMeetupGroupEvent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "meetup-group",
+            "in": "path",
+            "description": "URL name of Meetup Group. i.e. Azure-Sydney-User-Group",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "eventid",
+            "in": "path",
+            "description": "Alphanumeric identifier for a single Meetup Group Event. i.e. '258375479'",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Comma-delimited list of optional field names to append to the response",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/MeetupEvent"
+            }
+          },
+          "403": {
+            "description": "Meetup Event not available via unauthorised call"
+          },
+          "404": {
+            "description": "Meetup Event not found"
+          },
+          "410": {
+            "description": "Meetup Event has been deleted"
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "summary": "Retrieve the status of the Meetup API",
+        "operationId": "GetAPIStatus",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/APIStatus"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "APIStatus": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "Photo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Numeric photo ID"
+        },
+        "base_url": {
+          "type": "string",
+          "description": "A base url that can be use to construct a photo url from its components"
+        },
+        "highres_link": {
+          "type": "string",
+          "description": "Link for full sized photo"
+        },
+        "photo_link": {
+          "type": "string",
+          "description": "Link for standard sized photo"
+        },
+        "thumb_link": {
+          "type": "string",
+          "description": "Link for thumbnail sized photo"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of photo. One of 'event' or 'member'"
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Numeric category id"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the category"
+        },
+        "shortname": {
+          "type": "string",
+          "description": "String identifier of the category"
+        },
+        "sort_name": {
+          "type": "string",
+          "description": "Name used for sorting"
+        }
+      }
+    },
+    "MeetupEvent": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique alphanumeric identifier for event"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the event"
+        },
+        "link": {
+          "type": "string",
+          "description": "Link to event on meetup.com"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Scheduled event duration in milliseconds, if an end time is specified by the organiser."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event in HTML. Email addresses and phone numbers will be masked."
+        },
+        "local_date": {
+          "type": "string",
+          "description": "The local date of the Meetup in ISO 8601 format"
+        },
+        "local_time": {
+          "type": "string",
+          "description": "The local time of the Meetup in ISO 8601 format"
+        },
+        "manual_attendance_count": {
+          "type": "integer",
+          "description": "Manually entered total attendee headcount, if any exists"
+        },
+        "past_event_count_inclusive": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Number of past events that happened before and including this event."
+        },
+        "plain_text_description": {
+          "type": "string",
+          "description": "Plain text version of the event description. Email addresses and photo numbers will be masked."
+        },
+        "plain_text_no_images_description": {
+          "type": "string",
+          "description": "Plain text version of the event description without images. Email addresses and photo numbers will be masked."
+        },
+        "short_link": {
+          "type": "string",
+          "description": "A shortened link for the event on meetup.com"
+        },
+        "status": {
+          "type": "string",
+          "description": "'cancelled', 'upcoming', 'past', 'proposed', 'suggested' or 'draft'"
+        },
+        "time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "UTC start time of the event, in milliseconds since the epoch"
+        },
+        "utc_offset": {
+          "type": "integer",
+          "format": "int64",
+          "description": "he local offset from UTC time, in milliseconds"
+        },
+        "venue": {
+          "$ref": "#/definitions/MeetupVenue"
+        },
+        "waitlist_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Number of members on the waitlist, if one exists"
+        },
+        "yes_rsvp_count": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Number of yes RSVPs including guests"
+        }
+      }
+    },
+    "MeetupVenue": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Numeric Venue ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Venue name"
+        }
+      }
+    },
+    "MeetupMember": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Numeric Member ID"
+        },
+        "bio": {
+          "type": "string",
+          "description": "Member bio. When profile does not belong to the authenticated member, this may be omitted if member opted to hide their bio from others"
+        },
+        "city": {
+          "type": "string",
+          "description": "City associated with Member's location"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country code associated with Member's location"
+        },
+        "group_profile": {
+          "$ref": "#/definitions/MeetupMemberGroupProfile"
+        },
+        "joined": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Time member joined, represented as milliseconds since the epoch"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the member"
+        },
+        "photo": {
+          "$ref": "#/definitions/Photo"
+        }
+      }
+    },
+    "MeetupMemberGroupProfile": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The time this member joined the Group, represented as milliseconds since the epoch"
+        },
+        "intro": {
+          "type": "string",
+          "description": "Member intro, may be omitted if member opted to hide their intro from other members"
+        },
+        "group": {
+          "$ref": "#/definitions/MeetupGroup"
+        },
+        "link": {
+          "type": "string",
+          "description": "Member profile link, provides a link to the members chapter profile"
+        },
+        "role": {
+          "type": "string",
+          "description": "The leadership role of this member within the Group, if any. Value may be one of assistant_organizer, coorganizer, event_organizer, organizer"
+        },
+        "status": {
+          "type": "string",
+          "description": "Membership status in this Group. Value may be one of active, blocked, pending, pending_payment or none"
+        },
+        "title": {
+          "type": "string",
+          "description": "Organizer defined title of member. May be absent if not defined"
+        },
+        "updated": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The last time this member edited their Group profile, represented as milliseconds since the epoch"
+        },
+        "visited": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The last time this member visited the Group, represented as milliseconds since the epoch"
+        }
+      }
+    },
+    "MeetupGroup": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Numeric Group ID"
+        },
+        "description": {
+          "type": "string",
+          "description": "Short description of group"
+        },
+        "group_photo": {
+          "$ref": "#/definitions/Photo"
+        },
+        "key_photo": {
+          "$ref": "#/definitions/Photo"
+        },
+        "approved": {
+          "type": "boolean"
+        },
+        "category": {
+          "$ref": "#/definitions/Category"
+        },
+        "city": {
+          "type": "string",
+          "description": "City of the group"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country of the group"
+        },
+        "created": {
+          "type": "integer",
+          "description": "Time the group was created in milliseconds since the epoch"
+        },
+        "is_simplehtml": {
+          "type": "boolean",
+          "description": "'true' when the group description has been saved in a simplified HTML format, 'false' otherwise."
+        },
+        "join_mode": {
+          "type": "string",
+          "description": "Who can join this group and how. One of 'approval', 'closed', or 'open'"
+        },
+        "lat": {
+          "type": "integer",
+          "description": "Latitude"
+        },
+        "lon": {
+          "type": "integer",
+          "description": "Longtitude"
+        },
+        "localized_country_name": {
+          "type": "string",
+          "description": "Name of country of the group"
+        },
+        "localized_location": {
+          "type": "string",
+          "description": "City/State or City/Country of the group"
+        },
+        "members": {
+          "type": "integer",
+          "description": "Number of members of the Group"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the Group (if it has one)"
+        },
+        "plaintext_description": {
+          "type": "string",
+          "description": "Description of the group, in plain text format."
+        },
+        "plain_text_no_images_description": {
+          "type": "string",
+          "description": "Description of the group, in plain text format with no images."
+        },
+        "short_link": {
+          "type": "string",
+          "description": "A shorted URL for the group"
+        },
+        "url_Name": {
+          "type": "string",
+          "description": "Used to identify the group on meetup.com"
+        },
+        "timezone": {
+          "type": "string",
+          "description": "This represents the universal timezone identifier for the group"
+        },
+        "next_event": {
+          "$ref": "#/definitions/MeetupEvent"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about the Meetup API",
+    "url": "https://www.meetup.com/meetup_api/"
+  }
+},
+                "apiType": "Rest"
             }
         },
         {
