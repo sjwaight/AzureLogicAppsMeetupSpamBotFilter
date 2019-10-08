@@ -45,7 +45,6 @@
             "type": "string"
         },
         "storageAccounts_meetuplist_name": {
-            "defaultValue": "meetuplist",
             "type": "string"
         },
         "customApis_Meetup_ReadOnly_API_name": {
