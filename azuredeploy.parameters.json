@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "connections_gmail_name": {
+            "value": null
+        },
+        "connections_azuretables_name": {
+            "value": null
+        },
+        "workflows_meetup_bot_alert_name": {
+            "value": null
+        },
+        "storageAccounts_meetuplist_name": {
+            "value": null
+        },
+        "customApis_Meetup_ReadOnly_API_name": {
+            "value": null
+        },
+        "connections_Meetup_ReadOnly_API_name": {
+            "value": null
+        },
+        "connections_cognitiveservicescontentmoderator_name": {
+            "value": null
+        },
+        "alert_email_recipients": {
+            "value": null
+        },
+        "meetup_url": {
+            "value": null
+        },
+        "meetup_display_name": {
+            "value": null
+        },
+        "meetup_country_code": {
+            "value": null
+        },
+        "meetup_city": {
+            "value": null
+        }
+    }
+}

@@ -1,0 +1,861 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "connections_gmail_name": {
+            "defaultValue": "gmail",
+            "type": "string"
+        },
+        "alert_email_recipients": {
+            "metadata": {
+                "description": "Semi-colon separated list of email addresses to receive alerts"
+              },
+            "type": "string"
+        },
+        "meetup_url": {
+            "metadata": {
+                "description": "URL of meetup on meetup.com - i.e. 'Azure-Sydney-User-Group'"
+              },
+            "type": "string"
+        },
+        "meetup_display_name": {
+            "metadata": {
+                "description": "Name of the meetup - i.e. 'Azure Sydney User Group'"
+              },
+            "type": "string"
+        },
+        "meetup_country_code": {
+            "metadata": {
+                "description": "Country code for the meetup - i.e. 'AU'"
+              },
+            "type": "string"
+        },
+        "meetup_city": {
+            "metadata": {
+                "description": "City for the meetup - i.e. 'Sydney'"
+              },
+            "type": "string"
+        },
+        "connections_azuretables_name": {
+            "defaultValue": "azuretables",
+            "type": "string"
+        },
+        "workflows_meetup_bot_alert_name": {
+            "defaultValue": "meetup-bot-alert",
+            "type": "string"
+        },
+        "storageAccounts_meetuplist_name": {
+            "defaultValue": "meetuplist",
+            "type": "string"
+        },
+        "customApis_Meetup_ReadOnly_API_name": {
+            "defaultValue": "Meetup-ReadOnly-API",
+            "type": "string"
+        },
+        "connections_Meetup_ReadOnly_API_name": {
+            "defaultValue": "Meetup-ReadOnly-API",
+            "type": "string"
+        },
+        "connections_cognitiveservicescontentmoderator_name": {
+            "defaultValue": "cognitiveservicescontentmoderator",
+            "type": "string"
+        },
+        "logicAppLocation": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "allowedValues": [
+              "[resourceGroup().location]",
+              "eastasia",
+              "southeastasia",
+              "centralus",
+              "eastus",
+              "eastus2",
+              "westus",
+              "northcentralus",
+              "southcentralus",
+              "northeurope",
+              "westeurope",
+              "japanwest",
+              "japaneast",
+              "brazilsouth",
+              "australiaeast",
+              "australiasoutheast",
+              "southindia",
+              "centralindia",
+              "westindia",
+              "canadacentral",
+              "canadaeast",
+              "uksouth",
+              "ukwest",
+              "westcentralus",
+              "westus2"
+            ],
+            "metadata": {
+              "description": "Location of the Logic App."
+            }
+          }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-04-01",
+            "name": "[parameters('storageAccounts_meetuplist_name')]",
+            "location": "[parameters('logicAppLocation')]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_azuretables_name')]",
+            "location": "[parameters('logicAppLocation')]",
+            "properties": {
+                "displayName": "meetupeventlist",
+                "customParameterValues": {},
+                "api": {
+                    "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('logicAppLocation'), '/managedApis/', parameters('connections_azuretables_name'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_cognitiveservicescontentmoderator_name')]",
+            "location": "[parameters('logicAppLocation')]",
+            "properties": {
+                "displayName": "Meetup-Content-Mod",
+                "customParameterValues": {},
+                "api": {
+                    "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('logicAppLocation'), '/managedApis/', 'cognitiveservicescontentmoderator')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_gmail_name')]",
+            "location": "[parameters('logicAppLocation')]",
+            "properties": {
+                "displayName": "Gmail Connection",
+                "customParameterValues": {},
+                "api": {
+                    "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('logicAppLocation'), '/managedApis/', parameters('connections_gmail_name'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/customApis",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('customApis_Meetup_ReadOnly_API_name')]",
+            "location": "[parameters('logicAppLocation')]",
+            "properties": {
+                "brandColor": "#ffb6c1",
+                "description": "This is a simplified respresentation of Meetup's published API which you can find out more about https://www.meetup.com/meetup_api/. This Open API specificaton is not published or maintained by Meetup.",
+                "displayName": "[parameters('customApis_Meetup_ReadOnly_API_name')]",
+                "iconUri": "data:image/png;base64,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"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2019-04-01",
+            "name": "[concat(parameters('storageAccounts_meetuplist_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_meetuplist_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "enabled": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_Meetup_ReadOnly_API_name')]",
+            "location": "[parameters('logicAppLocation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/customApis', parameters('customApis_Meetup_ReadOnly_API_name'))]"
+            ],
+            "properties": {
+                "displayName": "[parameters('connections_Meetup_ReadOnly_API_name')]",
+                "customParameterValues": {},
+                "api": {
+                    "id": "[resourceId('Microsoft.Web/customApis', parameters('customApis_Meetup_ReadOnly_API_name'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_meetup_bot_alert_name')]",
+            "location": "[parameters('logicAppLocation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_Meetup_ReadOnly_API_name'))]",
+                "[resourceId('Microsoft.Web/customApis', parameters('customApis_Meetup_ReadOnly_API_name'))]",
+                "[resourceId('Microsoft.Web/connections', parameters('connections_azuretables_name'))]",
+                "[resourceId('Microsoft.Web/connections', parameters('connections_cognitiveservicescontentmoderator_name'))]",
+                "[resourceId('Microsoft.Web/connections', parameters('connections_gmail_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "Recurrence": {
+                            "recurrence": {
+                                "frequency": "Hour",
+                                "interval": 6
+                            },
+                            "type": "Recurrence",
+                            "inputs": {}
+                        }
+                    },
+                    "actions": {
+                        "Did_we_detect_any_suspect_accounts": {
+                            "actions": {
+                                "Send_email": {
+                                    "runAfter": {},
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "body": {
+                                            "Body": "@{concat('<ul>',variables('SuspectAccounts'),'</ul>')}",
+                                            "Subject": "Potential Bots for @{variables('MeetupDisplayName')}",
+                                            "To": "[parameters('alert_email_recipients')]"
+                                        },
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['gmail']['connectionId']"
+                                            }
+                                        },
+                                        "method": "post",
+                                        "path": "/Mail"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "For_each": [
+                                    "Succeeded",
+                                    "Failed"
+                                ]
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "not": {
+                                            "equals": [
+                                                "@empty(variables('SuspectAccounts'))",
+                                                "@true"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        },
+                        "For_each": {
+                            "foreach": "@body('Retrieve_Meetup_Group_Members_List')",
+                            "actions": {
+                                "Check_Processed_User_List": {
+                                    "runAfter": {},
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['azuretables']['connectionId']"
+                                            }
+                                        },
+                                        "method": "get",
+                                        "path": "/Tables/@{encodeURIComponent('parsedmembers')}/entities(PartitionKey='@{encodeURIComponent(variables('MeetupURL'))}',RowKey='@{encodeURIComponent(items('For_each')['id'])}')"
+                                    }
+                                },
+                                "Delay": {
+                                    "runAfter": {
+                                        "Reset_SpamBotRating": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "Wait",
+                                    "inputs": {
+                                        "interval": {
+                                            "count": 2,
+                                            "unit": "Second"
+                                        }
+                                    },
+                                    "description": "Delay two seconds so we can use free Content Moderator API tier (1 call per second)"
+                                },
+                                "Is_this_a_new_Member": {
+                                    "actions": {
+                                        "Check_Member_Location_details": {
+                                            "actions": {
+                                                "Increment_SpamBot_Rating_due_to_city_mismatch": {
+                                                    "runAfter": {},
+                                                    "type": "IncrementVariable",
+                                                    "inputs": {
+                                                        "name": "SpamBotRating"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Does_Member_Name_have_a_space": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "not": {
+                                                            "equals": [
+                                                                "@toUpper(items('For_each')?['country'])",
+                                                                "@toUpper(variables('MeetupCountry'))"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "equals": [
+                                                            "@toUpper(items('For_each')?['city'])",
+                                                            "@toUpper(items('For_each')?['city'])"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        },
+                                        "Does_Member_Name_have_a_space": {
+                                            "actions": {
+                                                "Increment_variable": {
+                                                    "runAfter": {},
+                                                    "type": "IncrementVariable",
+                                                    "inputs": {
+                                                        "name": "SpamBotRating"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {},
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "not": {
+                                                            "contains": [
+                                                                "@items('For_each')['name']",
+                                                                " "
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        },
+                                        "Does_the_Member_have_a_bio": {
+                                            "actions": {
+                                                "Check_for_invalid_API_request_response": {
+                                                    "actions": {
+                                                        "Review_recommended": {
+                                                            "actions": {
+                                                                "Increment_SpamBotRating_Suspect_Text": {
+                                                                    "runAfter": {},
+                                                                    "type": "IncrementVariable",
+                                                                    "inputs": {
+                                                                        "name": "SpamBotRating"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "runAfter": {},
+                                                            "expression": {
+                                                                "and": [
+                                                                    {
+                                                                        "equals": [
+                                                                            "@body('Detect_profanity_and_match_against_custom_and_shared_blacklists')?['Classification']?['ReviewRecommended']",
+                                                                            "@true"
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "type": "If"
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Detect_profanity_and_match_against_custom_and_shared_blacklists": [
+                                                            "Succeeded",
+                                                            "Failed"
+                                                        ]
+                                                    },
+                                                    "else": {
+                                                        "actions": {
+                                                            "Increment_Spambot_Rating_to_Trigger_Manual_Check_due_to_failure": {
+                                                                "runAfter": {},
+                                                                "type": "IncrementVariable",
+                                                                "inputs": {
+                                                                    "name": "SpamBotRating"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "expression": {
+                                                        "and": [
+                                                            {
+                                                                "not": {
+                                                                    "equals": [
+                                                                        "@outputs('Detect_profanity_and_match_against_custom_and_shared_blacklists')['statusCode']",
+                                                                        400
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type": "If"
+                                                },
+                                                "Detect_profanity_and_match_against_custom_and_shared_blacklists": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "body": "@{items('For_each')?['group_profile']?['intro']} @{items('For_each')?['bio']}",
+                                                        "headers": {
+                                                            "Content-Type": "text/plain"
+                                                        },
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['cognitiveservicescontentmoderator']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "post",
+                                                        "path": "/contentmoderator/moderate/v1.0/ProcessText/Screen/",
+                                                        "queries": {
+                                                            "autocorrect": true
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Does_the_Member_have_a_profile_picture": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression": {
+                                                "or": [
+                                                    {
+                                                        "not": {
+                                                            "equals": [
+                                                                "@items('For_each')?['bio']",
+                                                                "@null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "not": {
+                                                            "equals": [
+                                                                "@items('For_each')?['group_profile']?['intro']",
+                                                                "@null"
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        },
+                                        "Does_the_Member_have_a_profile_picture": {
+                                            "actions": {
+                                                "Check_for_invalid_image_in_request": {
+                                                    "actions": {
+                                                        "Is_Image_Classified_as_'Racy'": {
+                                                            "actions": {
+                                                                "Increment_SpamBot_Rating_Racy_Photo": {
+                                                                    "runAfter": {},
+                                                                    "type": "IncrementVariable",
+                                                                    "inputs": {
+                                                                        "name": "SpamBotRating"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "runAfter": {
+                                                                "Is_Image_Classified_as_Adult": [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "expression": {
+                                                                "and": [
+                                                                    {
+                                                                        "equals": [
+                                                                            "@body('Check_if_an_image_contains_racy_or_adult_content')['IsImageRacyClassified']",
+                                                                            "@true"
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "type": "If"
+                                                        },
+                                                        "Is_Image_Classified_as_Adult": {
+                                                            "actions": {
+                                                                "Increment_SpamBot_Rating_Adult_Photo": {
+                                                                    "runAfter": {},
+                                                                    "type": "IncrementVariable",
+                                                                    "inputs": {
+                                                                        "name": "SpamBotRating"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "runAfter": {},
+                                                            "expression": {
+                                                                "and": [
+                                                                    {
+                                                                        "equals": [
+                                                                            "@body('Check_if_an_image_contains_racy_or_adult_content')['IsImageAdultClassified']",
+                                                                            "@true"
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "type": "If"
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Check_if_an_image_contains_racy_or_adult_content": [
+                                                            "Succeeded",
+                                                            "Failed"
+                                                        ]
+                                                    },
+                                                    "else": {
+                                                        "actions": {
+                                                            "Increment_SpamBot_Rating_to_Trigger_Manual_Check": {
+                                                                "runAfter": {},
+                                                                "type": "IncrementVariable",
+                                                                "inputs": {
+                                                                    "name": "SpamBotRating"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "expression": {
+                                                        "and": [
+                                                            {
+                                                                "not": {
+                                                                    "equals": [
+                                                                        "@outputs('Check_if_an_image_contains_racy_or_adult_content')['statusCode']",
+                                                                        400
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type": "If",
+                                                    "description": "400 error occurs if the supplied image is invalid"
+                                                },
+                                                "Check_if_an_image_contains_racy_or_adult_content": {
+                                                    "runAfter": {},
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "body": {
+                                                            "DataRepresentation": "URL",
+                                                            "Value": "@items('For_each')?['photo']?['highres_link']"
+                                                        },
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['cognitiveservicescontentmoderator']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "post",
+                                                        "path": "/contentmoderator/moderate/v1.0/ProcessImage/Evaluate",
+                                                        "queries": {
+                                                            "format": "Image URL"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Check_Member_Location_details": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression": {
+                                                "and": [
+                                                    {
+                                                        "not": {
+                                                            "equals": [
+                                                                "@items('For_each')?['photo']?['highres_link']",
+                                                                "@null"
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            "type": "If"
+                                        },
+                                        "Insert_Entity": {
+                                            "runAfter": {
+                                                "Does_the_Member_have_a_bio": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ApiConnection",
+                                            "inputs": {
+                                                "body": {
+                                                    "PartitionKey": "@{variables('MeetupURL')}",
+                                                    "RowKey": "@{items('For_each')['id']}"
+                                                },
+                                                "host": {
+                                                    "connection": {
+                                                        "name": "@parameters('$connections')['azuretables']['connectionId']"
+                                                    }
+                                                },
+                                                "method": "post",
+                                                "path": "/Tables/@{encodeURIComponent('parsedmembers')}/entities"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Check_Processed_User_List": [
+                                            "Succeeded",
+                                            "Failed"
+                                        ]
+                                    },
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "equals": [
+                                                    "@outputs('Check_Processed_User_List')['statusCode']",
+                                                    404
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If",
+                                    "description": "Table lookup will return 404 if entity is not found"
+                                },
+                                "Reset_SpamBotRating": {
+                                    "runAfter": {
+                                        "Spam_Bot_Rating_higher_than_threshold": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "SpamBotRating",
+                                        "value": 0
+                                    }
+                                },
+                                "Spam_Bot_Rating_higher_than_threshold": {
+                                    "actions": {
+                                        "Append_to_string_variable": {
+                                            "runAfter": {},
+                                            "type": "AppendToStringVariable",
+                                            "inputs": {
+                                                "name": "SuspectAccounts",
+                                                "value": "<li>@{items('For_each')['name']}: @{items('For_each')?['group_profile']?['link']}</li>"
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Is_this_a_new_Member": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "greater": [
+                                                    "@variables('SpamBotRating')",
+                                                    0
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            },
+                            "runAfter": {
+                                "Retrieve_Meetup_Group_Members_List": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach",
+                            "runtimeConfiguration": {
+                                "concurrency": {
+                                    "repetitions": 1
+                                }
+                            }
+                        },
+                        "Initialise_MeetupCity_Variable": {
+                            "runAfter": {
+                                "Initialise_MeetupCountry_Variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "MeetupCity",
+                                        "type": "String",
+                                        "value": "[parameters('meetup_city')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialise_MeetupCountry_Variable": {
+                            "runAfter": {
+                                "Initialise_MeetupDisplayName_Variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "MeetupCountry",
+                                        "type": "String",
+                                        "value": "[parameters('meetup_country_code')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialise_MeetupDisplayName_Variable": {
+                            "runAfter": {
+                                "Initialise_MeetupURL_Variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "MeetupDisplayName",
+                                        "type": "String",
+                                        "value": "[parameters('meetup_display_name')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialise_MeetupURL_Variable": {
+                            "runAfter": {},
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "MeetupURL",
+                                        "type": "String",
+                                        "value": "[parameters('meetup_url')]"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialise_SpamBot_Variable": {
+                            "runAfter": {
+                                "Initialise_MeetupCity_Variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "SpamBotRating",
+                                        "type": "Integer",
+                                        "value": 0
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialise_SuspectAccounts_Variable": {
+                            "runAfter": {
+                                "Initialise_SpamBot_Variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "SuspectAccounts",
+                                        "type": "String"
+                                    }
+                                ]
+                            }
+                        },
+                        "Retrieve_Meetup_Group_Members_List": {
+                            "runAfter": {
+                                "Initialise_SuspectAccounts_Variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['Meetup-ReadOnly-API']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/@{encodeURIComponent(variables('MeetupURL'))}/members",
+                                "queries": {
+                                    "order": "joined",
+                                    "page": 20
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "Meetup-ReadOnly-API": {
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_Meetup_ReadOnly_API_name'))]",
+                                "connectionName": "Meetup-ReadOnly-API",
+                                "id": "[resourceId('Microsoft.Web/customApis', parameters('customApis_Meetup_ReadOnly_API_name'))]"
+                            },
+                            "azuretables": {
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azuretables_name'))]",
+                                "connectionName": "azuretables",
+                                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('logicAppLocation'), '/managedApis/', 'azuretables')]"
+                            },
+                            "cognitiveservicescontentmoderator": {
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_cognitiveservicescontentmoderator_name'))]",
+                                "connectionName": "cognitiveservicescontentmoderator",
+                                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('logicAppLocation'), '/managedApis/', 'cognitiveservicescontentmoderator')]"
+                            },
+                            "gmail": {
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_gmail_name'))]",
+                                "connectionName": "gmail",
+                                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('logicAppLocation'), '/managedApis/', 'gmail')]"                                
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
