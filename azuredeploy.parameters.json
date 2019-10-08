@@ -23,6 +23,9 @@
         "connections_cognitiveservicescontentmoderator_name": {
             "value": null
         },
+        "accounts_meetupcontentmod_name": {
+            "value": null
+        },
         "alert_email_recipients": {
             "value": null
         },

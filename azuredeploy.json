@@ -55,6 +55,9 @@
             "defaultValue": "Meetup-ReadOnly-API",
             "type": "string"
         },
+        "accounts_meetupcontentmod_name": {
+            "type": "string"
+        },
         "connections_cognitiveservicescontentmoderator_name": {
             "defaultValue": "cognitiveservicescontentmoderator",
             "type": "string"
@@ -94,6 +97,17 @@
     },
     "variables": {},
     "resources": [
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "apiVersion": "2017-04-18",
+            "name": "[parameters('accounts_meetupcontentmod_name')]",
+            "location": "[parameters('logicAppLocation')]",
+            "sku": {
+                "name": "F0"
+            },
+            "kind": "ContentModerator",
+            "properties": {}
+        },
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-04-01",
